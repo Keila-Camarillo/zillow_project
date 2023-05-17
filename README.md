@@ -1,18 +1,17 @@
 # Zillow Property Value Prediction
 
 # Project Description
-This project aims to analyze the Zillow dataset, a real estate marketplace dataset, to discover the drivers of property value for single-family properties. The project's goal is to develop a machine learning model that can predict the property value based on these drivers. By understanding the contributing elements to property value, we can gain valuable insights into the real estate market.
+This project aims to analyze the Zillow dataset, a real estate marketplace dataset, to discover the drivers of property value for single-family properties. 
 
 # Project Goal
-
-* Discover drivers of churn in the telco dataset 
-* Use drivers to develop a machine learning model to classify customers with the probablity of churning or not churning
-* Churn is defined as a customer who left within the last month.
-* This information could be used to further our understanding of which elements contribute to a customer churning.
+* Discover drivers of property value in the Zillow dataset. 
+* Use drivers to develop a machine learning model to predict the property value for a single family property.
+* Property value is defined as an estimated value for a property.
+* This information could be used to further our understanding of which elements contribute to the value of a property.
 
 # Initial Thoughts
 
-The initial hypothesis for this project is that certain factors such as 'area', 'bathrooms', 'year', 'pool', 'bedroom', 'fips', and 'year' may be significant drivers of property value.
+The initial hypothesis for this project is that certain factors such as 'area', 'bathrooms', 'year', 'pool', 'bedroom', 'two_bed', 'one_bath','fips', and 'year' may be significant drivers of property value.
 
 # The Plan
 
@@ -60,7 +59,7 @@ The initial hypothesis for this project is that certain factors such as 'area', 
     * Do homes in Orange county affect property value?
     * Do homes in Ventura county affect property value?
 
-* Develop a Model to predict if a customer will churn
+* Develop a Model to predict property
 
     - Use drivers identified in explore to build predictive models of different types
     - Evaluate models on train and validate data
@@ -77,7 +76,7 @@ Here is a data dictionary describing the features in the dataset:
 | Feature | Definition |
 |:--------|:-----------|
 |Property Value (Target)| Value of a single family property|
-|Area SQFT| The calculated finished square footage|
+|Area | The calculated finished square footage|
 |Bathrooms| The number of bathrooms, (half baths: .5 & three-quarters bath: .75|
 |Bedroom| 0 (No) or 1 (Yes), The number of bedrooms|
 |Pool| 0 (No) or 1 (Yes), The home has a pool|
@@ -97,11 +96,11 @@ Here is a data dictionary describing the features in the dataset:
 * 'Area' was found to have a correlation with 'Property Value' 
 * 'Full Bathrooms' was found to be a driver of 'Property Value', properties with more 'Full Bathrooms' tend to have lower property value, than homes with half bathrooms.
 * 'Bedrooms' was found to have a correlation with 'Property Value'
-* 'Two Bedrooms" and 'One Bathroom' were not found to be drivers of 'Property Value'
 * 'Pool' was found to be a driver of 'Property Value', properties with more 'Pools' tend to have higher property value, than homes with no 'pools'.
 * 'Year' was found to have a correlation with 'Property Value'
 * 'Orange County' were found to a moderate correlation with 'Property Value'
 * 'Ventura County' having a weak significant correlation with 'Property Value'
+* 'Two Bedrooms" and 'One Bathroom' were not found to be drivers of 'Property Value'
 
 # Recommendations
 * To increase the model performance an additional feature
