@@ -14,9 +14,28 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 
+from sklearn.feature_selection import f_regression 
+from sklearn.linear_model import LinearRegression, LassoLars, TweedieRegressor
+from sklearn.feature_selection import RFE, SelectKBest, f_regression
+from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score, explained_variance_score
+from sklearn.metrics import r2_score
 
 import wrangle as w
-import evaluate as e
+
+def show_features_rankings(X_train, rfe):
+    """
+    Takes in a dataframe and a fit RFE object in order to output the rank of all features
+    """
+    # Dataframe of rankings
+    ranks = pd.DataFrame({'rfe_ranking': rfe.ranking_}
+                        ,index = X_train.columns)
+    
+    ranks = ranks.sort_values(by="rfe_ranking", ascending=True)
+    
+    return ranks
+
 
 def metrics_reg(y, yhat):
     """
@@ -212,19 +231,22 @@ def glm_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
     
     return rmse, r2 
 
+
+
+
 def best_model(x_train_scaled, x_test_scaled, y_train, y_test):
-     """
+    """
     Trains and evaluates a polynomial regression model with the given data.
 
     Parameters:
-        x_train_scaled (array-like): Scaled training input features.
-        x_test_scaled (array-like): Scaled testing input features.
-        y_train (array-like): Training target values.
-        y_test (array-like): Testing target values.
+    x_train_scaled (array-like): Scaled training input features.
+    x_test_scaled (array-like): Scaled testing input features.
+    y_train (array-like): Training target values.
+    y_test (array-like): Testing target values.
 
     Returns:
-        tuple: A tuple containing the root mean squared error (RMSE) and R-squared (R2) 
-               values for the predictions made by the model on the testing data.
+    tuple: A tuple containing the root mean squared error (RMSE) and R-squared (R2) 
+            values for the predictions made by the model on the testing data.
     """
     pf = PolynomialFeatures(degree=3)
     # fit and transform X_train_scaled
@@ -238,5 +260,5 @@ def best_model(x_train_scaled, x_test_scaled, y_train, y_test):
     #use it
     pred_test = pr.predict(x_test_degree)
 
-    rmse, r2 = smetrics_reg(y_test, pred_test)
+    rmse, r2 = metrics_reg(y_test, pred_test)
     return rmse, r2

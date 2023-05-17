@@ -50,7 +50,6 @@ The initial hypothesis for this project is that certain factors such as 'area', 
     * Does area sqft affect property value ?
     * Is the average area for properties in Orange county greater than the overall average area?
     * Is having 1 bathroom worse for property value than having 2 bedrooms?
-    * Does having a half bath better for property value than a full bath ?
     * Is a pool better for property value?
     * Does bedrooms affect property value?
     * Does bathrooms affect property value?
@@ -100,7 +99,6 @@ Here is a data dictionary describing the features in the dataset:
 * 'Year' was found to have a correlation with 'Property Value'
 * 'Orange County' were found to a moderate correlation with 'Property Value'
 * 'Ventura County' having a weak significant correlation with 'Property Value'
-* 'Two Bedrooms" and 'One Bathroom' were not found to be drivers of 'Property Value'
 
 # Recommendations
 * To increase the model performance an additional feature
