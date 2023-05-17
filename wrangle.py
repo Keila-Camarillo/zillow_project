@@ -18,7 +18,7 @@ def get_data(directory=os.getcwd(), filename="zillow.csv"):
         - write df to csv
     - Output zillow df
 """
-    SQL_query = "select prop.taxvaluedollarcnt as property_value, prop.calculatedfinishedsquarefeet as area_sqft, prop.bathroomcnt as bathrooms, prop.bedroomcnt as bedroom, prop.poolcnt as pool, prop.fips, prop.yearbuilt as year from predictions_2017 pr join properties_2017 prop using(parcelid) join propertylandusetype plut using (propertylandusetypeid) where plut.propertylandusedesc like 'Single Family Residential'"
+    SQL_query = "select prop.taxvaluedollarcnt as property_value, prop.calculatedfinishedsquarefeet as area, prop.bathroomcnt as bathrooms, prop.bedroomcnt as bedroom, prop.poolcnt as pool, prop.fips, prop.yearbuilt as year from predictions_2017 pr join properties_2017 prop using(parcelid) join propertylandusetype plut using (propertylandusetypeid) where plut.propertylandusedesc like 'Single Family Residential'"
     if os.path.exists(directory + filename):
         df = pd.read_csv(filename) 
         return df
@@ -76,7 +76,7 @@ def clean_zillow():
     # replace nulls
     df["pool"]= df.pool.replace(np.nan,0)
     # drops rows with these nulls 
-    df = df.dropna(subset=['year', 'area_sqft', 'property_value'])
+    df = df.dropna(subset=['year', 'area', 'property_value'])
     
     # remove unnamed column from retrieved csv
     df = df.drop(columns=["Unnamed: 0"])
@@ -166,14 +166,18 @@ def rename_col(df, list_of_columns=[]):
     return df
 
 def mm_scale(x_train, x_validate, x_test):
-    '''
-    Scales data on x_train, x_validate, x_test
+    """
+    Apply MinMax scaling to the input data.
 
-    Returns: 
-    pandas.DataFrame: x_train_scaled, x_validate_scaled, x_test_scaled
+    Args:
+        x_train (pd.DataFrame): Training data features.
+        x_validate (pd.DataFrame): Validation data features.
+        x_test (pd.DataFrame): Test data features.
 
-    ** will error with category variables -- remove beforehand
-    '''
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: Scaled versions of the input data
+            (x_train_scaled, x_validate_scaled, x_test_scaled).
+    """
     scaler = sklearn.preprocessing.MinMaxScaler()
     scaler.fit(x_train)
 

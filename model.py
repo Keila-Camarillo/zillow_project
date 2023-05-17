@@ -18,13 +18,25 @@ from sklearn.metrics import r2_score
 import wrangle as w
 import evaluate as e
 
-def get_baseline(df, y):
-    df["yhat_baseline"] = df[y].mean()
-    return df
-
 def metrics_reg(y, yhat):
     """
-    send in y_true, y_pred & returns RMSE, R2
+    Calculate regression evaluation metrics.
+
+    Parameters:
+        y (array-like): Ground truth or actual target values.
+        yhat (array-like): Predicted target values.
+
+    Returns:
+        tuple: A tuple containing the following regression evaluation metrics:
+            - Root Mean Squared Error (RMSE): A measure of the average deviation between the predicted and actual values.
+            - R-squared (R2) Score: The proportion of the variance in the target variable that can be explained by the predictor.
+
+    Examples:
+        >>> y_true = [3, 5, 7, 9]
+        >>> y_pred = [2.5, 5.1, 6.8, 8.9]
+        >>> rmse, r2 = metrics_reg(y_true, y_pred)
+        >>> print("RMSE:", rmse)
+        >>> print("R2 Score:", r2)
     """
     rmse = mean_squared_error(y, yhat, squared=False)
     r2 = r2_score(y, yhat)
@@ -44,21 +56,6 @@ def select_kbest(X, y, k=2):
     mask = kbest.get_support()
     return X.columns[mask]
 
-def show_features_rankings(X_train, rfe):
-    """
-    Takes in a dataframe and a fit RFE object in order to output the rank of all features
-    """
-    # Dataframe of rankings
-    ranks = pd.DataFrame({'rfe_ranking': rfe.ranking_}
-                        ,index = X_train.columns)
-    
-    ranks = ranks.sort_values(by="rfe_ranking", ascending=True)
-    
-    return ranks
-
-def get_baseline(y_train):
-    x_train_scaled["yhat_baseline"] = y_train.mean()
-    return df
 
 def rfe(X, y, k=2):
     '''
@@ -85,6 +82,19 @@ def rfe(X, y, k=2):
 
 
 def ols_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
+    """
+    Performs Ordinary Least Squares (OLS) regression using LinearRegression() from scikit-learn.
+
+    Args:
+        x_train_scaled (array-like): Scaled training input features.
+        x_validate_scaled (array-like): Scaled validation input features.
+        y_train (array-like): Training target variable.
+        y_validate (array-like): Validation target variable.
+
+    Returns:
+        rmse (float): Root Mean Squared Error (RMSE) between the actual and predicted values on the validation set.
+        r2 (float): R-squared value indicating the goodness of fit on the validation set.
+    """
 
     #make it
     lr = LinearRegression()
@@ -105,7 +115,19 @@ def ols_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
     return rmse, r2
 
 def lars_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
+    """
+    Perform LARS (Least Angle Regression) modeling on the given data.
 
+    Parameters:
+        x_train_scaled (array-like): Scaled training features.
+        x_validate_scaled (array-like): Scaled validation features.
+        y_train (array-like): Training target variable.
+        y_validate (array-like): Validation target variable.
+
+    Returns:
+        rmse (float): Root Mean Squared Error (RMSE) between the predicted and actual values on the validation set.
+        r2 (float): R-squared value indicating the goodness of fit on the validation set.
+    """
     #make it
     lars = LassoLars(alpha=1)
 
@@ -121,10 +143,24 @@ def lars_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
     # validates
     rmse, r2 = metrics_reg(y_validate, pred_val_lars)
 
-
     return rmse, r2
 
 def poly_mod(x_train_scaled, x_validate_scaled, x_test_scaled, y_train, y_validate):
+    """
+    Fits a polynomial regression model of degree 3 using the provided scaled input features and target variables.
+
+    Args:
+        x_train_scaled (array-like): Scaled input features for training.
+        x_validate_scaled (array-like): Scaled input features for validation.
+        x_test_scaled (array-like): Scaled input features for testing.
+        y_train (array-like): Target variables for training.
+        y_validate (array-like): Target variables for validation.
+
+    Returns:
+        tuple: A tuple containing the root mean squared error (rmse) and the coefficient of determination (r2)
+               for the validation set predictions.
+
+    """
     # make the polynomial features to get a new set of features
     pf = PolynomialFeatures(degree=3)
 
@@ -147,6 +183,20 @@ def poly_mod(x_train_scaled, x_validate_scaled, x_test_scaled, y_train, y_valida
     return rmse, r2
 
 def glm_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
+    """
+    Fits a Generalized Linear Model (GLM) using the TweedieRegressor and returns the root mean squared error (RMSE)
+    and R-squared (R2) for the validation dataset.
+
+    Parameters:
+        x_train_scaled (array-like): The scaled feature matrix for the training dataset.
+        x_validate_scaled (array-like): The scaled feature matrix for the validation dataset.
+        y_train (array-like): The target variable array for the training dataset.
+        y_validate (array-like): The target variable array for the validation dataset.
+
+    Returns:
+        rmse (float): The root mean squared error (RMSE) for the validation dataset.
+        r2 (float): The R-squared (R2) value for the validation dataset.
+    """    
     #make it
     glm = TweedieRegressor(power=0, alpha=0)
 
@@ -163,6 +213,19 @@ def glm_mod(x_train_scaled, x_validate_scaled, y_train, y_validate):
     return rmse, r2 
 
 def best_model(x_train_scaled, x_test_scaled, y_train, y_test):
+     """
+    Trains and evaluates a polynomial regression model with the given data.
+
+    Parameters:
+        x_train_scaled (array-like): Scaled training input features.
+        x_test_scaled (array-like): Scaled testing input features.
+        y_train (array-like): Training target values.
+        y_test (array-like): Testing target values.
+
+    Returns:
+        tuple: A tuple containing the root mean squared error (RMSE) and R-squared (R2) 
+               values for the predictions made by the model on the testing data.
+    """
     pf = PolynomialFeatures(degree=3)
     # fit and transform X_train_scaled
     x_train_degree = pf.fit_transform(x_train_scaled)
@@ -175,5 +238,5 @@ def best_model(x_train_scaled, x_test_scaled, y_train, y_test):
     #use it
     pred_test = pr.predict(x_test_degree)
 
-    rmse, r2 = metrics_reg(y_test, pred_test)
+    rmse, r2 = smetrics_reg(y_test, pred_test)
     return rmse, r2
